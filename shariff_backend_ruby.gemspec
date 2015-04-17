@@ -22,7 +22,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'httpclient', '~> 2.6.0'
 
   s.add_development_dependency 'bundler', '~> 1.9.4'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'cutest'
-  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'rack-test', '~> 0.6.3'
+  s.add_development_dependency 'cutest', '~> 1.2.2'
+  s.add_development_dependency 'rr', '~> 1.1.2'
+  s.add_development_dependency 'webmock', '~> 1.21.0'
 end

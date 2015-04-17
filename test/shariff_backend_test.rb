@@ -3,12 +3,13 @@ $LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 require 'cutest'
 require 'rack/test'
 require 'webmock'
+require 'rr/without_autohook'
 
 require 'shariff_backend'
 
 # Set up Cutest to test this app
 # rubocop:disable Style/ClassAndModuleChildren
-module Cutest::Scope
+class Cutest::Scope
   include Rack::Test::Methods
 
   def app
@@ -16,16 +17,18 @@ module Cutest::Scope
   end
 end
 
-include WebMock::API
-
-WebMock.disable_net_connect!
-
 scope do
-  test 'Facebook' do
-    stub_request(:get, %r{\Ahttps://api.facebook.com/method/fql.query})
-      .to_return(body: '[{"share_count": 123}]')
+  def url_to_test
+    'https://marcusilgner.com'
+  end
 
-    get '/facebook?url=https://marcusilgner.com'
+  setup do
+    WebMock.disable_net_connect!
+    RR.mock(ShariffBackend::Facebook).count(url_to_test) { 123 }
+  end
+
+  test 'Facebook' do
+    get "/facebook?url=#{url_to_test}"
     assert_equal '123', last_response.body
   end
 end
