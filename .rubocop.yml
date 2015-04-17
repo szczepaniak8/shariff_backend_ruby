@@ -1,0 +1,22 @@
+AllCops:
+  Include:
+    - '**/Rakefile'
+    - '**/config.ru'
+  Exclude:
+    - 'bin/*'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - !ruby/regexp /old_and_unused\.rb$/
+
+Metrics/LineLength:
+  Max: 120
+
+Style/SignalException:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: aligned
