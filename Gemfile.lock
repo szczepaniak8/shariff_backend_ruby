@@ -4,6 +4,7 @@ PATH
     shariff_backend (0.0.1)
       cuba (~> 3.4.0)
       httpclient (~> 2.6.0)
+      rack-cache (~> 1.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -68,6 +69,8 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     rack (1.6.0)
+    rack-cache (1.2)
+      rack (>= 0.4)
     rack-test (0.6.3)
       rack (>= 1.0)
     rainbow (2.0.0)

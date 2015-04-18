@@ -1,9 +1,15 @@
 require 'cuba'
+require 'rack/cache'
 
 module ShariffBackend
   # Cuba/Rack application which routes the requests to the providers
   class App < ::Cuba
     PROVIDERS = [Facebook, Twitter, GooglePlus, LinkedIn]
+
+    # TODO: make cache configurable
+    use Rack::Cache,
+        verbose: true,
+        default_ttl: 60*60 # 1 hour
 
     def provider_name(provider)
       name = provider.name.split('::').last || provider.name
