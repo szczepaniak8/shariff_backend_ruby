@@ -9,7 +9,26 @@ module ShariffBackend
     # TODO: make cache configurable
     use Rack::Cache,
         verbose: true,
-        default_ttl: 60*60 # 1 hour
+        default_ttl: 60 * 60 # 1 hour
+
+    def valid_referrer?
+      allowed_referrer = self.class.settings[:allowed_referrer]
+      return true if allowed_referrer.nil?
+      if allowed_referrer.is_a?(String)
+        req.referrer == allowed_referrer
+      elsif allowed_referrer.is_a?(Regexp)
+        allowed_referrer.match(req.referrer)
+      else
+        raise ArgumentError, "Can't use #{allowed_referrer.class.name} for referrer checks"
+      end
+    end
+
+    def verify_referrer
+      return if valid_referrer?
+      res.status = 403
+      res.write('Not authorized')
+      halt(res.finish)
+    end
 
     def provider_name(provider)
       name = provider.name.split('::').last || provider.name
@@ -26,6 +45,7 @@ module ShariffBackend
       on get do
         # Requests to the root return counts from all providers
         on root, param('url') do |url|
+          verify_referrer
           data = Hash[all_provider_data(url)]
           res.write(JSON.dump(data))
         end
@@ -33,6 +53,7 @@ module ShariffBackend
         # It's also possible to query providers individually
         PROVIDERS.each do |provider|
           on provider_name(provider), param('url') do |url|
+            verify_referrer
             res.write(provider.count(url))
           end
         end

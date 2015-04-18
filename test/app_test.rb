@@ -21,7 +21,7 @@ setup do
   WebMock.disable_net_connect!
 end
 
-scope do
+scope 'App' do
   URL_TO_TEST = 'https://marcusilgner.com'
 
   scope 'root' do
@@ -88,6 +88,39 @@ scope do
     test 'returns 8' do
       get "/linkedin?url=#{URL_TO_TEST}"
       assert_equal '8', last_response.body
+    end
+  end
+
+  scope 'Referrer' do
+    scope 'String' do
+      setup do
+        ShariffBackend::App.settings[:allowed_referrer] = 'http://marcusilgner.com'
+      end
+
+      test "doesn't work w/o referrer" do
+        get '/?url=marcusilgner.com'
+        assert_equal(403, last_response.status)
+      end
+
+      test 'works with referrer' do
+        RR.mock(ShariffBackend::Facebook).count(URL_TO_TEST) { 123 }
+        header('Referer', 'http://marcusilgner.com')
+        get '/facebook?url=' + URL_TO_TEST
+        assert_equal(200, last_response.status)
+      end
+    end
+
+    scope 'Regex' do
+      setup do
+        ShariffBackend::App.settings[:allowed_referrer] = %r{https?://(?:\w+\.)?marcusilgner.com}
+      end
+
+      test 'works with referrer' do
+        RR.mock(ShariffBackend::Facebook).count(URL_TO_TEST) { 123 }
+        header('Referer', 'https://www.marcusilgner.com')
+        get '/facebook?url=' + URL_TO_TEST
+        assert_equal(200, last_response.status)
+      end
     end
   end
 end
