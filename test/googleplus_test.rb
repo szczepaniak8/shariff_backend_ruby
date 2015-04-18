@@ -8,9 +8,9 @@ require 'shariff_backend/googleplus'
 
 include WebMock::API
 
-scope do
+scope 'Google+' do
   def url_to_test
-    'https://marcusilgner.com'
+    'http://marcusilgner.com'
   end
 
   GOOGLE_FAKE_RESPONSE = <<EOS
@@ -31,8 +31,13 @@ EOS
       .to_return(body: GOOGLE_FAKE_RESPONSE)
   end
 
-  test 'Google+' do
+  test 'with protocol' do
     count = ShariffBackend::GooglePlus.count(url_to_test)
+    assert_equal('18', count)
+  end
+
+  test 'without protocol' do
+    count = ShariffBackend::GooglePlus.count('marcusilgner.com')
     assert_equal('18', count)
   end
 end

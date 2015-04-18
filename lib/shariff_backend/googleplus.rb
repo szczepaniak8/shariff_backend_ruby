@@ -8,6 +8,7 @@ module ShariffBackend
     BUTTON_BASE_URL = 'https://plusone.google.com/_/+1/fastbutton?url='
 
     def self.count(url)
+      url = "http://#{url}" unless /\Ahttps?:/.match(url)
       encoded = URI.escape(BUTTON_BASE_URL + url)
       response = HTTPClient.new.get(encoded)
       parse(response.body) if response.ok?
