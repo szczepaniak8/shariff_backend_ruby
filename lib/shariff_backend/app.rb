@@ -3,7 +3,7 @@ require 'cuba'
 module ShariffBackend
   # Cuba/Rack application which routes the requests to the providers
   class App < ::Cuba
-    PROVIDERS = [Facebook, Twitter, GooglePlus]
+    PROVIDERS = [Facebook, Twitter, GooglePlus, LinkedIn]
 
     def provider_name(provider)
       name = provider.name.split('::').last || provider.name
