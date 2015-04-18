@@ -28,6 +28,7 @@ scope do
     setup do
       RR.mock(ShariffBackend::Facebook).count(URL_TO_TEST) { 123 }
       RR.mock(ShariffBackend::Twitter).count(URL_TO_TEST) { 432 }
+      RR.mock(ShariffBackend::GooglePlus).count(URL_TO_TEST) { '> 9999' }
     end
 
     test 'returns all data' do
@@ -38,6 +39,8 @@ scope do
       assert_equal(parsed['facebook'], 123)
       assert(parsed.key?('twitter'))
       assert_equal(parsed['twitter'], 432)
+      assert(parsed.key?('googleplus'))
+      assert_equal(parsed['googleplus'], '> 9999')
     end
   end
 
@@ -60,6 +63,17 @@ scope do
     test 'returns 432' do
       get "/twitter?url=#{URL_TO_TEST}"
       assert_equal '432', last_response.body
+    end
+  end
+
+  scope 'Google+' do
+    setup do
+      RR.mock(ShariffBackend::GooglePlus).count(URL_TO_TEST) { '> 9999' }
+    end
+
+    test 'returns "> 9999"' do
+      get "/googleplus?url=#{URL_TO_TEST}"
+      assert_equal '> 9999', last_response.body
     end
   end
 end
