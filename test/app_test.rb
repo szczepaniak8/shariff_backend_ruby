@@ -24,6 +24,23 @@ end
 scope do
   URL_TO_TEST = 'https://marcusilgner.com'
 
+  scope 'root' do
+    setup do
+      RR.mock(ShariffBackend::Facebook).count(URL_TO_TEST) { 123 }
+      RR.mock(ShariffBackend::Twitter).count(URL_TO_TEST) { 432 }
+    end
+
+    test 'returns all data' do
+      get "/?url=#{URL_TO_TEST}"
+      assert(last_response.body.length > 10)
+      parsed = JSON.parse(last_response.body)
+      assert(parsed.key?('facebook'))
+      assert_equal(parsed['facebook'], 123)
+      assert(parsed.key?('twitter'))
+      assert_equal(parsed['twitter'], 432)
+    end
+  end
+
   scope 'Facebook' do
     setup do
       RR.mock(ShariffBackend::Facebook).count(URL_TO_TEST) { 123 }
