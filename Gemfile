@@ -23,7 +23,7 @@ group :development, :test do
     gem 'pry-byebug', '~> 3.1.0'
     gem 'pry-stack_explorer'
   end
-  
+
   # git integration
   gem 'pry-git'
   # on-the-fly syntax highlighting

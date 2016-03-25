@@ -1,20 +1,17 @@
-require 'httpclient'
+require 'twitter'
 require 'json'
 
 module ShariffBackend
   # Simple share-count retrieval from Twitter
   module Twitter
-    TWITTER_BASE_URL = 'http://urls.api.twitter.com/1/urls/count.json?url='
 
     def self.count(url)
-      encoded = URI.escape(TWITTER_BASE_URL + url)
-      response = HTTPClient.new.get(encoded)
-      parse(response) if response.ok?
-    end
-
-    def self.parse(response)
-      json = JSON.parse(response.body)
-      json['count']
+      client = ::Twitter::REST::Client.new do |config|
+        config.consumer_key        = ShariffBackend.configuration.consumer_key
+        config.consumer_secret     = ShariffBackend.configuration.consumer_secret
+        config.access_token        = ShariffBackend.configuration.access_token
+        config.access_token_secret = ShariffBackend.configuration.access_token_secret
+      end.search(url).count
     end
   end
 end
