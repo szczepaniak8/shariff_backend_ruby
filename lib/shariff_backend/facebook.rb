@@ -16,6 +16,8 @@ module ShariffBackend
     def self.parse(response)
       json = JSON.parse(response.body)
       json.first['share_count'] if json.is_a?(Array)
+    rescue
+      0
     end
   end
 end
