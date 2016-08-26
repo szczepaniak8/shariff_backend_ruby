@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shariff_backend (0.0.2)
+    shariff_backend (0.0.3)
       cuba (~> 3.4.0)
       httpclient (~> 2.6.0)
       rack-cache (~> 1.2.0)
