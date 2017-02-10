@@ -29,4 +29,6 @@ group :development, :test do
   # on-the-fly syntax highlighting
   gem 'coolline'
   gem 'awesome_print'
+
+  gem 'as-duration'
 end
