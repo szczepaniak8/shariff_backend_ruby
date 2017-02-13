@@ -15,6 +15,7 @@ group :development, :test do
   # Nicer console
   gem 'pry-rails'
   gem 'pry-rescue'
+  
   # Debugger
   if ENV['RUBYMINE']
     gem 'debase'

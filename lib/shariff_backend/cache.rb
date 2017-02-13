@@ -5,7 +5,7 @@ require 'as-duration';
 module ShariffBackend
   module Cache
     @data =  {}
-    @expires = 10.second
+    @expires = 2.second
 
     def self.get(key)
       @data[key.to_s][:value] if self.exist?(key) && !self.expires?(key)
@@ -17,6 +17,7 @@ module ShariffBackend
         value: block_given? ? yield : value,
         timestamp: Time.now
       }
+      @data[key.to_s][:value]
     end
 
     def self.unset(key)
@@ -38,7 +39,7 @@ module ShariffBackend
 
     def self.expires?(key)
       return false unless self.exist?(key)
-      (@data[key.to_s][:timestamp] - Time.now).to_i > @expires.to_i
+      (@data[key.to_s][:timestamp] - Time.now).to_i.abs >= @expires.to_i
     end
 
     def self.check_key!(key)

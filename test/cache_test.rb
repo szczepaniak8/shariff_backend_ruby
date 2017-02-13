@@ -11,8 +11,11 @@ scope do
   nonexists_key = '__ECeI__'
   key = 'name'
   key1 = 'fullname'
+  key2 = 'test'
+  key3 = 'test_'
   original_value1 = 'gogogog'
   original_value2 = 'doe'
+  original_value3 = '_expires_'
 
   setup do
   	ShariffBackend::Cache.set(key, original_value1)
@@ -57,6 +60,35 @@ scope do
 	      val = ShariffBackend::Cache.get(key1)
 	      assert_equal(original_value2, val)
 	    end 
+		end
+
+		scope 'get_or_set' do
+    	test 'get_or_set return assigned value' do
+	      
+	      val = ShariffBackend::Cache.set(key1, original_value2)
+	      assert_equal(original_value2, val)
+	    end 
+
+	   
+		end
+
+		scope 'expires' do
+    	test 'value is cached for entire expire time' do
+	      ShariffBackend::Cache.set(key3, original_value3)
+	      
+	      assert_equal(original_value3, ShariffBackend::Cache.get(key3))
+	      sleep 1
+	      assert_equal(original_value3, ShariffBackend::Cache.get(key3))
+	    end 
+
+	    test 'value is released after expire time' do
+	      ShariffBackend::Cache.set(key3, original_value3)
+	      
+	      assert_equal(original_value3, ShariffBackend::Cache.get(key3))
+	      sleep 3
+	      assert_equal(nil, ShariffBackend::Cache.get(key3))
+	    end 
+	    
 		end
   end
 end

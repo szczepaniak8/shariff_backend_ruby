@@ -43,10 +43,17 @@ module ShariffBackend
 
     define do
       on get do
+        ShariffBackend.configure {} unless ShariffBackend.configuration
         # Requests to the root return counts from all providers
         on root, param('url') do |url|
           verify_referrer
-          data = Hash[all_provider_data(url)]
+          if ShariffBackend.configuration.cache 
+            data = ShariffBackend::Cache.get_or_set('all_provider_data') do
+              Hash[all_provider_data(url)]
+            end
+          else 
+            data = Hash[all_provider_data(url)]
+          end
           res.write(JSON.dump(data))
         end
 
