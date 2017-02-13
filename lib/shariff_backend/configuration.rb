@@ -1,3 +1,4 @@
+require 'as-duration'
 module ShariffBackend
   class << self
     attr_accessor :configuration

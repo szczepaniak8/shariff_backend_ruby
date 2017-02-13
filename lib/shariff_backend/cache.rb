@@ -1,6 +1,6 @@
 require 'httpclient'
 require 'json'
-require 'as-duration';
+require 'as-duration'
 
 module ShariffBackend
   module Cache
