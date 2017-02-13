@@ -1,11 +1,12 @@
 require 'httpclient'
 require 'json'
 require 'as-duration'
+require 'shariff_backend/configuration'
 
 module ShariffBackend
   module Cache
     @data =  {}
-    @expires = 2.second
+    @expires = ShariffBackend.configuration.nil? ? 2.second : ShariffBackend.configuration.cache_expire
 
     def self.get(key)
       @data[key.to_s][:value] if self.exist?(key) && !self.expires?(key)
@@ -31,7 +32,7 @@ module ShariffBackend
     end
 
     def self.get_or_set(key, value = nil)
-      return get(key) if exist?(key)
+      return get(key) if exist?(key) and not expires?(key)
       set(key, block_given? ? yield : value)
     end
 
@@ -39,7 +40,7 @@ module ShariffBackend
 
     def self.expires?(key)
       return false unless self.exist?(key)
-      (@data[key.to_s][:timestamp] - Time.now).to_i.abs >= @expires.to_i
+      (Time.now - @data[key.to_s][:timestamp]).to_i > @expires.to_i
     end
 
     def self.check_key!(key)
